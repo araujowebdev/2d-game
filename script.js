@@ -108,7 +108,7 @@ window.addEventListener("load", function () {
       context.fillStyle = "red";
       context.fillRect(this.x, this.y, this.width, this.height);
       context.fillStyle = "black";
-      context.font = '20px Helvetica'
+      context.font = "20px Helvetica";
       context.fillText(this.lives, this.x, this.y);
     }
   }
@@ -131,14 +131,23 @@ window.addEventListener("load", function () {
       this.game = game;
       this.fontSize = 25;
       this.fontFamily = "Helvetica";
-      this.color = "yellow";
+      this.color = "white";
     }
     draw(context) {
-      // ammo
+      context.save();
       context.fillStyle = this.color;
+      context.shadowOffsetX = 2;
+      context.shadowOffsetY = 2;
+      context.shadowColor = "black";
+      context.font = this.fontSize + "px " + this.fontFamily;
+      // score
+      context.fillText("Score: " + this.game.score, 20, 40);
+      // ammo
+
       for (let i = 0; i < this.game.ammo; i++) {
         context.fillRect(20 + 5 * i, 50, 3, 20);
       }
+      context.restore();
     }
   }
   // Class Game
@@ -158,6 +167,8 @@ window.addEventListener("load", function () {
       this.ammoTimer = 0;
       this.ammoInterval = 500;
       this.gameOver = false;
+      this.score = 0;
+      this.winningScore = 10;
     }
     update(deltaTime) {
       this.player.update();
@@ -179,6 +190,7 @@ window.addEventListener("load", function () {
             if (enemy.lives <= 0) {
               enemy.markedForDeletion = true;
               this.score += enemy.score;
+              if (this.score > this.winningScore) this.gameOver = true;
             }
           }
         });
